@@ -5,7 +5,7 @@ import {RouterLink} from "vue-router";
 
 <template>
   <nav>
-    <RouterLink to="/">Enregistrer un flux</RouterLink>
+    <RouterLink to="/register-flux">Enregistrer un flux</RouterLink>
     <RouterLink to="/">Liste des flux</RouterLink>
     <RouterLink to="/">Préférences</RouterLink>
   </nav>

@@ -10,7 +10,23 @@ const flux:Flux = reactive({
 
 const onSubmit = ()=>{
   console.log(flux)
-}
+  console.log(testUrl(flux.url))
+
+  //Vérification de l'url, si non validé => message d'erreur
+  if (!testUrl(flux.url)) {
+    alert("L'URL saisie n'est pas valide !");
+    return;
+  }
+
+  // Enregistrement des données dans le local storage
+  localStorage.setItem("fluxData", JSON.stringify(flux));
+  console.log("Données enregistrées :", flux);
+};
+
+//Système de vérification de l'url avec une Regex
+const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w.-]*)*\/?$/;
+const testUrl = (url: string) => urlRegex.test(url);
+
 </script>
 
 <template>
