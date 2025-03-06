@@ -12,6 +12,11 @@ const loadFluxList = () => {
   fluxList.value = JSON.parse(localStorage.getItem("fluxList") || "[]");
 }
 
+//Sauvegarder
+const saveFluxList = () => {
+  localStorage.setItem("fluxList", JSON.stringify(fluxList.value));
+}
+
 // Ajouter ou modifier un flux
 const saveFlux = (flux: Flux) => {
   if (editIndex.value !== null) {
@@ -22,10 +27,7 @@ const saveFlux = (flux: Flux) => {
     // Ajouter un nouveau flux
     fluxList.value.push(flux);
   }
-
-  // Enregistrer la liste mise à jour dans le localStorage
-  localStorage.setItem("fluxList", JSON.stringify(fluxList.value));
-
+  saveFluxList();
   // Réinitialiser la sélection
   fluxToEdit.value = null;
 };
@@ -36,10 +38,16 @@ const editFlux = (index: number) => {
   editIndex.value = index;
 };
 
+//Ajouter/retirer un flux en favoris
+const addToFavorites = (index: number) => {
+  fluxList.value[index].favorite = !fluxList.value[index].favorite;
+  saveFluxList()
+}
+
 //Supprimer un flux
 const deleteFlux = (index: number) => {
   fluxList.value.splice(index, 1);
-  localStorage.setItem("fluxList", JSON.stringify(fluxList.value));
+  saveFluxList();
 }
 
 onMounted(() => {
@@ -56,6 +64,7 @@ onMounted(() => {
       <a :href="item.url" target="_blank">
         <h4>{{item.title}}</h4>
       </a>
+      <button @click="addToFavorites(index)">{{item.favorite ? "Retirer des favoris" : "Ajouter aux favoris"}}</button>
       <button @click="editFlux(index)">Modifier</button>
       <button @click="deleteFlux(index)">Suprimer</button>
     </li>
