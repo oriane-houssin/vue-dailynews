@@ -1,12 +1,24 @@
 <script setup lang="ts">
 
 import type {Flux} from "@/models/flux.ts";
-import {reactive} from "vue";
+import {reactive, watch} from "vue";
 
 const flux:Flux = reactive({
   title: '',
-  url: ''
+  url: '',
+  favorite: false
 });
+
+const props = defineProps<{fluxToEdit: Flux | null}>();
+const emit = defineEmits(["flux-updated"]);
+
+//Mis à jour
+watch(() => props.fluxToEdit, (newVal) => {
+  if (newVal) {
+    flux.title = newVal.title;
+    flux.url = newVal.url;
+  }
+}, {immediate: true})
 
 const onSubmit = ()=>{
   console.log(flux)
@@ -18,14 +30,7 @@ const onSubmit = ()=>{
     return;
   }
 
-  // Charger les flux existants depuis le localStorage
-  const savedFluxList = JSON.parse(localStorage.getItem("fluxList") || "[]");
-
-  // Ajouter le nouveau flux
-  savedFluxList.push({ ...flux });
-
-  // Enregistrer la liste mise à jour
-  localStorage.setItem("fluxList", JSON.stringify(savedFluxList));
+  emit("flux-updated", {...flux})
 
   // Réinitialiser le formulaire
   flux.title = "";
@@ -44,7 +49,7 @@ const testUrl = (url: string) => urlRegex.test(url);
     <input type="text" id="title" name="title" placeholder="Entrez le titre..." v-model="flux.title" required />
     <label for="url">Lien</label>
     <input type="url" id="url" name="url" placeholder="Entrez l'URL..." v-model="flux.url" required />
-    <button type="submit">Enregistrer le flux</button>
+    <button type="submit">{{ props.fluxToEdit ? "Modifier" : "Enregistrer" }}</button>
   </form>
 </template>
 
