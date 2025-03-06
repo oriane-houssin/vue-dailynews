@@ -18,9 +18,18 @@ const onSubmit = ()=>{
     return;
   }
 
-  // Enregistrement des données dans le local storage
-  localStorage.setItem("fluxData", JSON.stringify(flux));
-  console.log("Données enregistrées :", flux);
+  // Charger les flux existants depuis le localStorage
+  const savedFluxList = JSON.parse(localStorage.getItem("fluxList") || "[]");
+
+  // Ajouter le nouveau flux
+  savedFluxList.push({ ...flux });
+
+  // Enregistrer la liste mise à jour
+  localStorage.setItem("fluxList", JSON.stringify(savedFluxList));
+
+  // Réinitialiser le formulaire
+  flux.title = "";
+  flux.url = "";
 };
 
 //Système de vérification de l'url avec une Regex
