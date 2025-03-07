@@ -7,7 +7,7 @@ import type {Flux} from "@/models/flux.ts";
 const route = useRoute();
 const fluxList = JSON.parse(localStorage.getItem("fluxList") || "[]");
 const flux = ref<Flux | null>(null);
-const articles = ref<{title: string, description: string, image: string}[]>([]);
+const articles = ref<{title: string, description: string, image: string, link: string}[]>([]);
 const limit = ref("10"); //valeur par défaut
 
 onMounted(async () => {
@@ -34,6 +34,7 @@ onMounted(async () => {
         title: item.querySelector("title")?.textContent || "",
         description: item.querySelector("description")?.textContent || "",
         image: imageUrl,
+        link: item.querySelector("link")?.textContent || "#",
       }
     })
     articles.value = allArticles;
@@ -65,6 +66,7 @@ const filteredArticles = () => {
     <ul v-if="filteredArticles().length>0">
       <li v-for="(article, index) in filteredArticles()" :key="index">
         <h3>{{article.title}}</h3>
+        <a :href="article.link" target="_blank">Voir</a>
         <img :src="article.image" alt="Thumbnail de l'article" width="150"/>
         <p v-html="article.description"></p>
       </li>
