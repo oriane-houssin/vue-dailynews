@@ -61,9 +61,9 @@ onMounted(() => {
   <FormulaireFluxView :fluxToEdit="fluxToEdit" @flux-updated="saveFlux"/>
   <ul v-if="fluxList.length > 0">
     <li v-for="(item, index) in fluxList" :key="index">
-      <a :href="item.url" target="_blank">
+      <router-link :to="'/flux/' + index">
         <h4>{{item.title}}</h4>
-      </a>
+      </router-link>
       <button @click="addToFavorites(index)">{{item.favorite ? "Retirer des favoris" : "Ajouter aux favoris"}}</button>
       <button @click="editFlux(index)">Modifier</button>
       <button @click="deleteFlux(index)">Suprimer</button>
