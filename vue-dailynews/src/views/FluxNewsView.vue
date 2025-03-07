@@ -1,14 +1,43 @@
 <script setup lang="ts">
 
 import {useRoute} from "vue-router";
-import {onMounted, ref} from "vue";
+import {onMounted, type Ref, ref, watch} from "vue";
 import type {Flux} from "@/models/flux.ts";
 
 const route = useRoute();
 const fluxList = JSON.parse(localStorage.getItem("fluxList") || "[]");
 const flux = ref<Flux | null>(null);
-const articles = ref<{title: string, description: string, image: string, link: string}[]>([]);
+const articles = ref<{title: string, description: string, image: string, link: string, favorite: boolean}[]>([]);
 const limit = ref("10"); //valeur par défaut
+
+const loadFavorites = () => {
+  const savedFavorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+
+  if (!Array.isArray(savedFavorites)) return;
+
+  // Marquer les articles correspondants comme favoris
+  articles.value.forEach((article) => {
+    article.favorite = savedFavorites.some((fav) => fav.link === article.link);
+  });
+};
+
+const toggleFavorite = (article) => {
+  article.favorite = !article.favorite;
+
+  let savedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+  if (!Array.isArray(savedFavorites)) {
+    savedFavorites = [];
+  }
+
+  if (article.favorite) {
+    savedFavorites.push(article); // Ajouter l'article
+  } else {
+    savedFavorites = savedFavorites.filter((fav) => fav.link !== article.link); // Supprimer
+  }
+
+  localStorage.setItem("favorites", JSON.stringify(savedFavorites));
+};
 
 onMounted(async () => {
   const fluxIndex = Number(route.params.id);
@@ -35,12 +64,14 @@ onMounted(async () => {
         description: item.querySelector("description")?.textContent || "",
         image: imageUrl,
         link: item.querySelector("link")?.textContent || "#",
+        favorite: false,
       }
     })
     articles.value = allArticles;
   } catch (error) {
     console.error("Erreur lors du chargement du Flux RSS :", error);
   }
+  loadFavorites();
 })
 
 //Filtre de limite de résultats
@@ -48,6 +79,10 @@ const filteredArticles = () => {
   const max = limit.value === "all" ? articles.value.length : parseInt(limit.value);
   return articles.value.slice(0, max);
 }
+watch(articles, () => {
+  const favorites = articles.value.filter((article) => article.favorite);
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+});
 
 
 </script>
@@ -69,6 +104,9 @@ const filteredArticles = () => {
         <a :href="article.link" target="_blank">Voir</a>
         <img :src="article.image" alt="Thumbnail de l'article" width="150"/>
         <p v-html="article.description"></p>
+        <button @click="toggleFavorite(article)">
+          {{ article.favorite ? "★ Retirer des favoris" : "☆ Ajouter aux favoris" }}
+        </button>
       </li>
     </ul>
     <p v-else>Aucune news.</p>
