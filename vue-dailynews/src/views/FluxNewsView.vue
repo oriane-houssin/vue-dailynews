@@ -65,6 +65,7 @@ onMounted(async () => {
         image: imageUrl,
         link: item.querySelector("link")?.textContent || "#",
         favorite: false,
+        sourceUrl: flux.value.url,
       }
     })
     articles.value = allArticles;

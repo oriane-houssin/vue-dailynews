@@ -15,11 +15,6 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/register-flux',
-      name: 'register-flux',
-      component: FormulaireFluxView,
-    },
-    {
       path: '/flux-list',
       name: 'flux-list',
       component: FluxListView,

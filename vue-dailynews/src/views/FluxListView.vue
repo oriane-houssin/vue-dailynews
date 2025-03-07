@@ -46,6 +46,9 @@ const addToFavorites = (index: number) => {
 
 //Supprimer un flux
 const deleteFlux = (index: number) => {
+  let savedFavorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+  savedFavorites = savedFavorites.filter(article => article.sourceUrl !== fluxList.value[index].url);
+  localStorage.setItem("favorites", JSON.stringify(savedFavorites));
   fluxList.value.splice(index, 1);
   saveFluxList();
 }
@@ -57,8 +60,9 @@ onMounted(() => {
 
 <template>
 <div>
-  <h2>Liste des Flux RSS</h2>
+  <h2>Enregistrer un flux :</h2>
   <FormulaireFluxView :fluxToEdit="fluxToEdit" @flux-updated="saveFlux"/>
+  <h2>Liste des Flux RSS</h2>
   <ul v-if="fluxList.length > 0">
     <li v-for="(item, index) in fluxList" :key="index">
       <router-link :to="'/flux/' + index">
