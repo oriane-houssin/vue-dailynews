@@ -4,6 +4,7 @@ import FormulaireFluxView from "@/views/FormulaireFluxView.vue";
 import FluxListView from "@/views/FluxListView.vue";
 import FluxFavoritesView from "@/views/FluxFavoritesView.vue";
 import FluxNewsView from "@/views/FluxNewsView.vue";
+import NewsFavoritesView from "@/views/NewsFavoritesView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +34,11 @@ const router = createRouter({
       name: 'flux',
       component: FluxNewsView,
       props: true,
+    },
+    {
+      path: '/news-favoris',
+      name: 'news-favoris',
+      component: NewsFavoritesView,
     },
   ],
 })
